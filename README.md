@@ -14,9 +14,12 @@ The goal of this project is to:
 * Generate actionable business insights
 
 ### Dataset information
+
+Source: [user_events](dataset/user_events.csv)
+
 Total Records: `9,381`
 
-Table: `user_events`
+Table name: `user_events`
 
 | Column Name    | Data Type | Description                                            |
 | -------------- | --------- | ------------------------------------------------------ |
