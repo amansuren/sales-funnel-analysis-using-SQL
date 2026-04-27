@@ -13,6 +13,14 @@ The goal of this project is to:
 * Identify drop-off points in the funnel
 * Generate actionable business insights
 
+### What's Covered
+- Funnel stage volumes & conversion rates
+- Drop-off analysis
+- Traffic source performance
+- Time-to-convert metrics
+- Revenue KPIs (AOV, revenue per visitor)
+- Weekly trends
+- Cart abandonment rate
 ### Dataset information
 
 Source: [user_events](dataset/user_events.csv)
@@ -30,3 +38,5 @@ Table name: `user_events`
 | product_id     | Integer   | Product involved in the event                          |
 | amount         | Float     | Revenue value (only for purchase events)               |
 | traffic_source | Text      | Channel source (organic, paid, social, referral, etc.) |
+
+
