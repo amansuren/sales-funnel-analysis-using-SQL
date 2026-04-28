@@ -9,13 +9,12 @@ This project analyzes user behavior data to understand how customers move throug
 Using **event-level transactional data**, the project identifies conversion rates, drop-off points, and revenue insights to support data-driven business decisions.
 
 The goal of this project is to:
-
 * Understand customer journey behavior
 * Measure stage-wise conversion rates
 * Identify drop-off points in the funnel
 * Generate actionable business insights
 
-### What's Covered
+What's Covered
 - Funnel stage volumes & conversion rates
 - Drop-off analysis
 - Traffic source performance
@@ -130,13 +129,45 @@ Of the 1,338 people who added items to their cart:
  
 ---
 
+## 🔑 Key Takeaways
+ 
+**1. The funnel has one big leak and one big strength.**
+The view-to-cart rate (31%) is the only broken stage. Once customers reach checkout, they almost always complete the purchase (92%). Fix the top, and revenue follows.
+ 
+**2. Email is the highest-quality channel — and it's underused.**
+With a 34% purchase rate and $34.17 earned per visitor, email outperforms every other channel by a wide margin. Growing the email list is the single best growth lever available.
+ 
+**3. Social media needs a strategy rethink.**
+Social drives 29% of traffic but only 12% of purchases. Social visitors look at premium items but don't buy — they need to be retargeted with paid ads to convert.
+ 
+**4. The lower funnel is a strength, not a problem.**
+92% of people who enter payment details complete the purchase. The checkout experience is excellent — no redesign needed there.
+ 
+**5. Revenue is plateaued.**
+Four weeks of flat $17–18K revenue signals the business has hit a ceiling with its current approach. The path to growth is converting existing traffic better, not buying more of it.
+
+## ✅ Recommendations
+
+| Priority | Action | Why It Matters |
+|----------|--------|----------------|
+| 🔴 Fix first | A/B test product pages — better CTAs, urgency signals, social proof | Addresses the 69% view-to-cart drop |
+| 🔴 Fix first | Remove forced account creation at checkout | Leading cause of cart abandonment globally |
+| 🟠 Next | Show full costs (incl. shipping) earlier | Eliminates surprise at checkout |
+| 🟠 Next | Set up a cart abandonment email flow | Recovers high-intent customers automatically |
+| 🟡 Grow | Invest in building the email list | Highest-ROI channel at $34.17/visitor |
+| 🟡 Grow | Retarget social visitors with paid ads | Converts window-shoppers who browse premium items |
 
 
+---
+ 
+## 🛠️ Tools Used
+ 
 
-
-
-
-
+- **Google BigQuery:** Running all SQL queries on cloud data 
+- **Standard SQL:** CTEs, aggregations, conditional logic, date functions 
+- **Power BI:**  Visualising results in a dashboard 
+- **GitHub:**  Version control and project showcase 
+ 
 
 
 
