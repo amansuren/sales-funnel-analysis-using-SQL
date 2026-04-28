@@ -44,7 +44,9 @@ I identified where customers drop off, which marketing channels actually work, a
 |  Shoppers Who Abandoned Their Cart | **47%** |
 |  Average Time from Visit to Purchase | 24.56 minutes |
 
- 
+
+
+
  ## Where Customers Drop Off
  
 
@@ -60,10 +62,9 @@ I identified where customers drop off, which marketing channels actually work, a
 69% of visitors never even add to cart. But once they do, 92% go on to buy. The product isn't the problem - the path to the cart is.
 
 ## 📸 Query Results - Funnel & Conversion Rates
- 
-![Funnel Volumes](screenshots/02_funnel_volumes.png)
-![Conversion Rates](screenshots/03_conversion_rate.png)
- 
+
+<img src="screenshots/ecommerce_funnel_diagram.svg" width="750" height="750"> 
+
 ---
  
 ##  Which Marketing Channels Work Best?
