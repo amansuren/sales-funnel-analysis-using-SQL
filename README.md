@@ -30,6 +30,11 @@ Using SQL on Google BigQuery, I examined 30 days of user event data to answer on
 I identified where customers drop off, which marketing channels actually work, and where the business is leaving money on the table.
 
 ---
+## 📸 Query Results - Funnel & Conversion Rates
+
+<img src="screenshots/ecommerce_funnel_diagram.svg" width="750" height="750"> 
+
+
  
 ##  Results at a Glance
  
@@ -61,11 +66,7 @@ I identified where customers drop off, which marketing channels actually work, a
 **Finding:** The first step loses **10× more customers** than any other stage combined. This is where the business should focus first.
 69% of visitors never even add to cart. But once they do, 92% go on to buy. The product isn't the problem - the path to the cart is.
 
-## 📸 Query Results - Funnel & Conversion Rates
 
-<img src="screenshots/ecommerce_funnel_diagram.svg" width="750" height="750"> 
-
----
  
 ##  Which Marketing Channels Work Best?
  
@@ -82,7 +83,7 @@ Not all traffic is equal. Here's how each channel performs:
  
 ![Traffic Source](screenshots/05_traffic_source.png)
  
----
+
  
 ## Revenue Breakdown by Channel
  
@@ -97,9 +98,9 @@ Interesting finding: **Social media users browse the most expensive items** (hig
  
 ![Revenue by Source](screenshots/10_traffic_source_revenue_kpis.png)
  
----
+
  
-## 📅 Weekly Performance
+##  Weekly Performance
  
 Revenue was steady and consistent across 4 full weeks - no crashes, no spikes.
  
@@ -117,9 +118,9 @@ The business is **stable but not growing**. The weekly plateau is a signal that 
  
 ![Weekly Trend](screenshots/11_weekly_trends.png)
  
----
+
  
-## 🛒 The Cart Abandonment Opportunity
+##  The Cart Abandonment Opportunity
  
 Of the 1,338 people who added items to their cart:
 - ✅ **709 bought** (53%)
