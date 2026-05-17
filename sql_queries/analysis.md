@@ -1,3 +1,6 @@
+## Sales Funnel Analytics
+
+## 📌 Solution
 
 ### 1. What events exist in the dataset and how active is each one?
 
