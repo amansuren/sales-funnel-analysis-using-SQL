@@ -1,4 +1,4 @@
-SELECT * FROM `sql-project-487019.funnel_data_01.user_events` LIMIT 100
+SELECT * FROM `sql-project-487019.funnel_data_01.user_events` LIMIT 100;
 
 --1. What events exist in the dataset and how active is each one?
 
@@ -9,7 +9,7 @@ SELECT
   MIN(event_date) AS earliest,
   MAX(event_date) AS latest
 FROM `sql-project-487019.funnel_data_01.user_events`
-GROUP BY event_type
+GROUP BY event_type;
 
 -- 2. What are the raw funnel stage volumes over the last 30 days?
 
@@ -77,7 +77,7 @@ dropoffs AS (
   UNION ALL
   SELECT 'payment -> purchase' ,  s4 - s5, ROUND((s4-s5)*100/s4) FROM funnel_stages
 )
-SELECT * FROM dropoffs ORDER BY users_lost DESC
+SELECT * FROM dropoffs ORDER BY users_lost DESC;
 
 
 --5. Which traffic sources drive the most visitors, cart adds, and purchases?
@@ -98,7 +98,7 @@ SELECT
   ROUND(purchases * 100 / views) AS purchase_conversion_rate,
   ROUND(purchases * 100 / carts) AS cart_to_purchase_rate
 FROM source_funnel
-ORDER BY purchases DESC
+ORDER BY purchases DESC;
 
 --6. Which traffic source has the best overall purchase conversion rate?
 
@@ -119,7 +119,7 @@ SELECT
 FROM source_funnel
 WHERE views > 0
 ORDER BY purchase_conversion_rate DESC
-LIMIT 1
+LIMIT 1;
 
 --7. How long does a converted user take to move from view to purchase?
 
@@ -160,7 +160,7 @@ SELECT
   ROUND(AVG(TIMESTAMP_DIFF(purchase_time, view_time, MINUTE)), 1) AS avg_journey_minutes
 FROM user_journey
 GROUP BY traffic_source
-ORDER BY avg_journey_minutes
+ORDER BY avg_journey_minutes;
 
 --9. What is the total revenue, average order value, and revenue per visitor?
 
@@ -181,7 +181,7 @@ SELECT
   ROUND(total_revenue / total_orders,     2) AS avg_order_value,
   ROUND(total_revenue / total_buyers,     2) AS revenue_per_buyer,
   ROUND(total_revenue / total_visitors,   2) AS revenue_per_visitor
-FROM funnel_revenue
+FROM funnel_revenue;
 
 --10. Which traffic source generates the most revenue and highest AOV?
 
@@ -204,7 +204,7 @@ SELECT
   ROUND(revenue / visitors,    2) AS revenue_per_visitor
 FROM source_revenue
 WHERE orders > 0
-ORDER BY total_revenue DESC
+ORDER BY total_revenue DESC;
 
 --11. How do revenue KPIs trend week over week?
 
@@ -220,7 +220,7 @@ SELECT
 FROM `sql-project-487019.funnel_data_01.user_events`
 WHERE event_date >= TIMESTAMP(DATE_SUB('2026-02-03', INTERVAL 30 DAY))
 GROUP BY week_start
-ORDER BY week_start
+ORDER BY week_start;
 
 --12. What share of users who added to cart ultimately purchased? (cart abandonment)
 
@@ -239,4 +239,4 @@ SELECT
   COUNTIF(added_to_cart = 1 AND purchased = 0)             AS cart_abandoners,
   ROUND(COUNTIF(added_to_cart=1 AND purchased=0) * 100.0
         / NULLIF(COUNTIF(added_to_cart=1), 0), 1)              AS cart_abandonment_rate_pct
-FROM cart_users
+FROM cart_users;
