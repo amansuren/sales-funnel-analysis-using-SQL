@@ -14,12 +14,13 @@ SELECT
 FROM `sql-project-487019.funnel_data_01.user_events`
 GROUP BY event_type
 ```
-
+#### Output
 ![imagge](https://github.com/amansuren/sales-funnel-analysis-using-SQL/blob/87d370d742d3faf134538b961edc87302add99b1/screenshots/1.png)
 
+#### Insight
+- 5 distinct event types confirm a clean 5-stage funnel. Page views are 7 times more frequent than purchases - expected for an e-commerce dataset of this scale.
 
-- 5 distinct event types confirm a clean 5-stage funnel. Page views are 6 times more frequent than purchases - expected for an e-commerce dataset of this scale.
-
+---
 ### 2. What are the raw funnel stage volumes over the last 30 days?
 ```sql
 WITH
@@ -39,13 +40,16 @@ WITH
   )
 SELECT * FROM funnel_stages
 ```
+#### Output
 
 ![imagge](https://github.com/amansuren/sales-funnel-analysis-using-SQL/blob/87d370d742d3faf134538b961edc87302add99b1/screenshots/2.png)
 
+#### Insight
 - Count distinct users who reached each stage (page view -> cart -> checkout -> payment -> purchase) in the rolling 30-day window.
 - 4K visitors in 30 days narrows to 709 purchasers.
 
-### 3. What is the conversion rate across the funnel?
+---
+### 3. What is the step by step conversion rate across the funnel?
 ```sql
 WITH funnel_stages AS (
   SELECT
@@ -60,20 +64,25 @@ WITH funnel_stages AS (
 SELECT
   stage_1_views,
   stage_2_cart,
-  ROUND(stage_2_cart    * 100 / stage_1_views)     AS view_to_cart_rate,
+  ROUND(stage_2_cart * 100 / stage_1_views)     AS view_to_cart_rate,
   stage_3_checkout,
-  ROUND(stage_3_checkout* 100 / stage_2_cart)      AS cart_to_checkout_rate,
+  ROUND(stage_3_checkout * 100 / stage_2_cart)      AS cart_to_checkout_rate,
   stage_4_payment,
   ROUND(stage_4_payment * 100 / stage_3_checkout)  AS checkout_to_payment_rate,
   stage_5_purchase,
-  ROUND(stage_5_purchase* 100 / stage_4_payment)   AS payment_to_purchase_rate,
-  ROUND(stage_5_purchase* 100 / stage_1_views)     AS overall_conversion_rate
+  ROUND(stage_5_purchase * 100 / stage_4_payment)   AS payment_to_purchase_rate,
+  ROUND(stage_5_purchase * 100 / stage_1_views)     AS overall_conversion_rate
 FROM funnel_stages
 
 ```
+#### Output
 ![imagge](https://github.com/amansuren/sales-funnel-analysis-using-SQL/blob/87d370d742d3faf134538b961edc87302add99b1/screenshots/3.png)
 
-- View -> cart at 31% is the weakest step — nearly 2 in 3 visitors never add anything. Once in checkout, users convert well (72–74%). Product discovery & merchandising is the top priority.
+#### Insight
+
+- View -> cart at 31% is the weakest step — nearly 2 in 3 visitors never add anything. Once in checkout, users convert well (81–92%). Product discovery & merchandising is the top priority.
+
+---
 ### 4. Where is the biggest drop-off in the funnel?
 
 ```sql
@@ -96,13 +105,44 @@ dropoffs AS (
   UNION ALL
   SELECT 'payment -> purchase' ,  s4 - s5, ROUND((s4-s5)*100/s4) FROM funnel_stages
 )
-SELECT * FROM dropoffs ORDER BY users_lost DESC
+SELECT * FROM dropoffs 
+ORDER BY users_lost DESC
 ```
+#### Output
+
 ![imagge](https://github.com/amansuren/sales-funnel-analysis-using-SQL/blob/87d370d742d3faf134538b961edc87302add99b1/screenshots/4.png)
+
+#### Insight
 
 - View -> cart loses 2,953 users (69%) — more than the next three stages combined. This is the #1 optimisation opportunity.
 
-### 5. Which traffic sources drive the most visitors, cart adds, and purchases?
+### 5. What share of users who added to cart ultimately purchased? (cart abandonment)
+```sql
+WITH cart_users AS (
+  SELECT
+    user_id,
+    MAX(CASE WHEN event_type = 'add_to_cart' THEN 1 ELSE 0 END) AS added_to_cart,
+    MAX(CASE WHEN event_type = 'purchase'    THEN 1 ELSE 0 END) AS purchased
+  FROM `sql-project-487019.funnel_data_01.user_events`
+  WHERE event_date >= TIMESTAMP(DATE_SUB('2026-02-03', INTERVAL 30 DAY))
+  GROUP BY user_id
+)
+SELECT
+  COUNTIF(added_to_cart = 1)                  AS cart_users,
+  COUNTIF(added_to_cart = 1 AND purchased = 1)          AS cart_converters,
+  COUNTIF(added_to_cart = 1 AND purchased = 0)             AS cart_abandoners,
+  ROUND(COUNTIF(added_to_cart=1 AND purchased=0) * 100.0
+        / NULLIF(COUNTIF(added_to_cart=1), 0), 1)              AS cart_abandonment_rate_pct
+FROM cart_users;
+```
+#### Output
+
+![imagge](https://github.com/amansuren/sales-funnel-analysis-using-SQL/blob/87d370d742d3faf134538b961edc87302add99b1/screenshots/12.png)
+
+#### Insight
+- 47% cart abandonment — above the e-commerce benchmark of ~70%. Retargeting emails or exit-intent offers for cart abandoners could recover significant revenue.
+  
+### 6. Which traffic sources drive the most visitors, cart adds, and purchases?
 ```sql
 WITH source_funnel AS (
   SELECT
@@ -122,11 +162,15 @@ SELECT
 FROM source_funnel
 ORDER BY purchases DESC
 ```
+#### Output
+
 ![imagge](https://github.com/amansuren/sales-funnel-analysis-using-SQL/blob/87d370d742d3faf134538b961edc87302add99b1/screenshots/5.png)
+
+#### Insight
 
 - Emails converts at 34% despite low volume — strongest purchase rate. Social media is weakest at 3%.
 
-### 6. Which traffic source has the best overall purchase conversion rate?
+### 7. Which traffic source has the best overall purchase conversion rate?
 ```sql
 WITH source_funnel AS (
   SELECT
@@ -147,8 +191,14 @@ WHERE views > 0
 ORDER BY purchase_conversion_rate DESC
 LIMIT 1;
 ```
+#### Output
+
 ![imagge](https://github.com/amansuren/sales-funnel-analysis-using-SQL/blob/87d370d742d3faf134538b961edc87302add99b1/screenshots/6.png)
-### 7. How long does a converted user take to move from view to purchase?
+
+#### Insight
+- Emails wins at 33.85%
+ 
+### 8. How long does a converted user take to move from view to purchase?
 ```sql
 WITH user_journey AS (
   SELECT
@@ -168,8 +218,14 @@ SELECT
   ROUND(AVG(TIMESTAMP_DIFF(purchase_time, view_time,    MINUTE)), 2) AS avg_total_journey_min
 FROM user_journey;
 ```
+#### Output
+
 ![imagge](https://github.com/amansuren/sales-funnel-analysis-using-SQL/blob/87d370d742d3faf134538b961edc87302add99b1/screenshots/7.png)
-### 8. How does journey speed vary by traffic source for converted users?
+
+#### Insight
+- The average buyer takes ~25 minutes end-to-end. Most of that time (13 min) is spent after adding to cart - suggesting hesitation at checkout that could be reduced with trust signals or progress indicators.
+  
+### 9. How does journey speed vary by traffic source for converted users?
 ```sql
 WITH user_journey AS (
   SELECT
@@ -190,8 +246,13 @@ FROM user_journey
 GROUP BY traffic_source
 ORDER BY avg_journey_minutes;
 ```
+#### Output
 ![imagge](https://github.com/amansuren/sales-funnel-analysis-using-SQL/blob/87d370d742d3faf134538b961edc87302add99b1/screenshots/8.png)
-### 9. What is the total revenue, average order value, and revenue per visitor?
+
+#### Insight
+Paid search buyers decide in 23 mins - high purchase intent confirmed. Email and social take 25 mins, suggesting they browse more before committing. Retargeting or cart-save emails are well-suited for those channels.
+
+### 10. What is the total revenue, average order value, and revenue per visitor?
 ```sql
 WITH funnel_revenue AS (
   SELECT
@@ -212,8 +273,12 @@ SELECT
   ROUND(total_revenue / total_visitors,   2) AS revenue_per_visitor
 FROM funnel_revenue;
 ```
+#### Output
 ![imagge](https://github.com/amansuren/sales-funnel-analysis-using-SQL/blob/87d370d742d3faf134538b961edc87302add99b1/screenshots/9.png)
-### 10. Which traffic source generates the most revenue and highest AOV?
+#### Insight
+- Average Order Value of $107.46 with revenue per visitor of $17.76
+  
+### 11. Which traffic source generates the most revenue and highest AOV?
 ```sql
 WITH source_revenue AS (
   SELECT
@@ -236,8 +301,12 @@ FROM source_revenue
 WHERE orders > 0
 ORDER BY total_revenue DESC;
 ```
+#### Output
 ![imagge](https://github.com/amansuren/sales-funnel-analysis-using-SQL/blob/87d370d742d3faf134538b961edc87302add99b1/screenshots/10.png)
-### 11. How do revenue KPIs trend week over week?
+
+#### Insight
+- Social has the highest AOV ($115) and Email has highest RPV($34.17) - 5 times better than social. Emails and Paid ads show very low AOV.
+### 12. How do revenue KPIs trend week over week?
 ```sql
 SELECT
   DATE_TRUNC(event_date, WEEK) AS week_start,
@@ -253,24 +322,11 @@ WHERE event_date >= TIMESTAMP(DATE_SUB('2026-02-03', INTERVAL 30 DAY))
 GROUP BY week_start
 ORDER BY week_start;
 ```
+#### Output
 ![imagge](https://github.com/amansuren/sales-funnel-analysis-using-SQL/blob/87d370d742d3faf134538b961edc87302add99b1/screenshots/11.png)
-### 12. What share of users who added to cart ultimately purchased? (cart abandonment)
-```sql
-WITH cart_users AS (
-  SELECT
-    user_id,
-    MAX(CASE WHEN event_type = 'add_to_cart' THEN 1 ELSE 0 END) AS added_to_cart,
-    MAX(CASE WHEN event_type = 'purchase'    THEN 1 ELSE 0 END) AS purchased
-  FROM `sql-project-487019.funnel_data_01.user_events`
-  WHERE event_date >= TIMESTAMP(DATE_SUB('2026-02-03', INTERVAL 30 DAY))
-  GROUP BY user_id
-)
-SELECT
-  COUNTIF(added_to_cart = 1)                  AS cart_users,
-  COUNTIF(added_to_cart = 1 AND purchased = 1)          AS cart_converters,
-  COUNTIF(added_to_cart = 1 AND purchased = 0)             AS cart_abandoners,
-  ROUND(COUNTIF(added_to_cart=1 AND purchased=0) * 100.0
-        / NULLIF(COUNTIF(added_to_cart=1), 0), 1)              AS cart_abandonment_rate_pct
-FROM cart_users;
-```
-![imagge](https://github.com/amansuren/sales-funnel-analysis-using-SQL/blob/87d370d742d3faf134538b961edc87302add99b1/screenshots/12.png)
+
+#### Insight
+- Revenue declined by 5.24% in Week 2, indicating a slight drop in sales performance.
+- Week 3 revenue recovered with a 3.82% growth compared to the previous week.
+- Week 4 recorded the highest positive growth at 5.04%.
+- Revenue showed minor fluctuations before a sharp 71% decline in the final week.
