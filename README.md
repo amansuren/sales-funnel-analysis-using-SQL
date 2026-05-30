@@ -173,7 +173,8 @@ Four weeks of flat $17–18K revenue signals the business has hit a ceiling with
 - **GitHub:**  Version control and project showcase 
  
 
-
+## 📋 Data Dictionary
+See [`data_dictionary.md`](./data_dictionary.md) for full column definitions and funnel stage reference.
 
 
 
